@@ -2,7 +2,7 @@
 
 ## detail
 ```html
-This is a back end based on springboot to practice using mssql and learning
+This is a back end application based on springboot to practice using mssql and learning
 mvc framework.
 ```
 ## how to run
