@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mssqldemoback.mapper.StudentCourseMapper">
+    <select id="getStudentCourseVo"
+            resultType="com.example.mssqldemoback.vo.StudentCourseVo">
+        select *
+        from dbo.student_course sc
+                 inner join dbo.course c on c.id = sc.course_id
+        where student_id = #{studentId};
+    </select>
+</mapper>

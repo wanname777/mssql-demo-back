@@ -1,0 +1,50 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    druid:
+      url: jdbc:sqlserver://localhost:1433;database=courses_selecting_system
+      username: sa
+      password: Zz845623197
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      initial-size: 5
+      max-active: 30
+      min-idle: 5
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 50
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: 123456
+      filter:
+        wall:
+          enabled: true
+        stat:
+          enabled: true
+      web-stat-filter:
+        enabled: true
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+      connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+      use-global-data-source-stat: true
+      keep-alive: true
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: false
+    lazy-loading-enabled: true
+  mapper-locations: classpath:/mapper/*.xml
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+springfox:
+  documentation:
+    open-api:
+      enabled: true
