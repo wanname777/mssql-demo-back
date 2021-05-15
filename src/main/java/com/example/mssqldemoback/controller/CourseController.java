@@ -81,7 +81,7 @@ public class CourseController {
 
     /**
      * <p>
-     * 删除制定id的课程
+     * 删除指定id的课程
      * </p>
      *
      * @param id 课程id

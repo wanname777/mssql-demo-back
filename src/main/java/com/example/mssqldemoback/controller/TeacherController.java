@@ -53,5 +53,46 @@ public class TeacherController {
         return Result.ok()
                      .data("data", byId);
     }
+    /**
+     * <p>
+     * 添加或修改教师信息
+     * 如果找不到教师id则添加，如果找到了则修改拥有的值
+     * </p>
+     *
+     * @param teacher 要添加或修改的教师信息
+     * @return Result
+     */
+    @PostMapping("/saveOrUpdate")
+    public Result saveOrUpdate(Teacher teacher) {
+        System.out.println(teacherService);
+        boolean b = teacherService.saveOrUpdate(teacher);
+        if (b) {
+            return Result.ok()
+                         .message("操作成功");
+        } else {
+            return Result.error()
+                         .message("操作失败");
+        }
+    }
+
+    /**
+     * <p>
+     * 删除指定id的教师
+     * </p>
+     *
+     * @param id 教师id
+     * @return Result
+     */
+    @GetMapping("/deleteOne")
+    public Result deleteOne(String id) {
+        boolean b = teacherService.removeById(id);
+        if (b) {
+            return Result.ok()
+                         .message("删除成功");
+        } else {
+            return Result.error()
+                         .message("删除失败");
+        }
+    }
 }
 
