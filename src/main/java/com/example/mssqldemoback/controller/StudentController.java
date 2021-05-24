@@ -1,19 +1,22 @@
 package com.example.mssqldemoback.controller;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.mssqldemoback.dto.BusinessException;
 import com.example.mssqldemoback.dto.HttpStatus;
 import com.example.mssqldemoback.dto.Result;
-import com.example.mssqldemoback.pojo.Course;
-import com.example.mssqldemoback.pojo.Department;
 import com.example.mssqldemoback.pojo.Student;
 import com.example.mssqldemoback.service.StudentService;
+import com.example.mssqldemoback.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -25,15 +28,18 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/mssqldemoback/student")
+@Slf4j
 public class StudentController {
     @Autowired
     private StudentService studentService;
+
     @GetMapping("/selectAll")
     public Result selectAll() {
         List<Student> list = studentService.list();
         return Result.ok()
                      .data("data", list);
     }
+
     @GetMapping("/selectById")
     public Result selectById(String id) {
         Student byId = studentService.getById(id);
@@ -54,6 +60,7 @@ public class StudentController {
             throw new BusinessException(HttpStatus.NOT_ACCEPTABLE, "密码错误");
         }
     }
+
     /**
      * <p>
      * 添加或修改学生信息
@@ -94,6 +101,38 @@ public class StudentController {
             return Result.error()
                          .message("删除失败");
         }
+    }
+
+    @GetMapping("/jwt-login")
+    public Result jwtLogin(String username, String password) {
+
+        log.info("用户名：{}", username);
+        log.info("密码:{}", password);
+        Student byId = studentService.getById(username);
+        if (byId == null) {
+            throw new BusinessException(HttpStatus.NOT_ACCEPTABLE, "用户不存在");
+        } else if (byId.getPwd()
+                       .equals(password)) {
+            Map<String, String> map = new HashMap<>();
+            map.put("name", byId.getName());
+            map.put("dept", byId.getDept());
+            String token = JwtUtil.getToken(map);
+            return Result.ok()
+                         .message("登陆成功")
+                         .data("info", token);
+        } else {
+            throw new BusinessException(HttpStatus.NOT_ACCEPTABLE, "密码错误");
+        }
+    }
+
+    @PostMapping("/jwt-test-token")
+    public Result jwtTestToken(String token, String detail) {
+        log.info("当前token：{}", token);
+        DecodedJWT verify = JwtUtil.verify(token);
+        log.info("username:{}", verify.getClaim("username"));
+        return Result.ok()
+                     .message("验证成功")
+                     .data("info", detail);
     }
 }
 

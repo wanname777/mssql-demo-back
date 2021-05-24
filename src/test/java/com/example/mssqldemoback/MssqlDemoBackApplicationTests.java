@@ -1,25 +1,45 @@
 package com.example.mssqldemoback;
 
-import com.example.mssqldemoback.pojo.Course;
-import com.example.mssqldemoback.service.CourseService;
-import io.swagger.annotations.Authorization;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Calendar;
 
 @SpringBootTest
 class MssqlDemoBackApplicationTests {
-    @Autowired
-    private CourseService courseService;
+    private final String alg = "ajdsklifa!@#$%1";
+    private String sign;
+
     @Test
     void contextLoads() {
     }
+
     @Test
-    void testUpdate(){
-        Course course = new Course();
-        course.setId("10003");
-        course.setName("nihao");
-        boolean b = courseService.updateById(course);
-        System.out.println(b);
+    public void getToken() {
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.SECOND, 100);
+
+        this.sign = JWT.create()
+                       .withClaim("userId", 12)
+                       .withClaim("username", "xiaoming")
+                       .withExpiresAt(instance.getTime())
+                       .sign(Algorithm.HMAC256(alg));
+        System.out.println(sign);
+        verifyToken();
+    }
+
+    @Test
+    public void verifyToken() {
+        JWTVerifier build = JWT.require(Algorithm.HMAC256(alg))
+                               .build();
+        DecodedJWT verify = build.verify(sign);
+        System.out.println(verify.getClaim("userId")
+                                 .toString());
+        System.out.println(verify.getClaim("username")
+                                 .asString());
     }
 }

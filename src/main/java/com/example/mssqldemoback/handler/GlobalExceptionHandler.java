@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
-    public Result exceptionHandler() {
+    public Result exceptionHandler(Exception e) {
+        e.printStackTrace();
         return Result.error()
                      .code(HttpStatus.ERROR)
-                     .message("自定义错误");
+                     .message(e.getMessage());
     }
 
     @ExceptionHandler(value = BusinessException.class)
