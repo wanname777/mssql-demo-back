@@ -8,6 +8,6 @@
         select *
         from teacher_course tc
                  inner join course c on c.id = tc.course_id
-        where teacher_id = #{teacherId};
+        where teacher_id = #{teacherId}
     </select>
 </mapper>

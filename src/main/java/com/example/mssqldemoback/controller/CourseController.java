@@ -1,6 +1,7 @@
 package com.example.mssqldemoback.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mssqldemoback.dto.Result;
 import com.example.mssqldemoback.pojo.Course;
 import com.example.mssqldemoback.service.CourseService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -48,12 +50,18 @@ public class CourseController {
      * @return Result
      */
     @GetMapping("/selectAllOpened")
-    public Result selectAllOpened() {
+    public Result selectAllOpened(Integer current, Integer size) {
+        Page<Course> coursePage = new Page<>(current, size);
         QueryWrapper<Course> wrapper = new QueryWrapper<>();
         wrapper.eq("is_open", 1);
-        List<Course> list = courseService.list(wrapper);
+        Page<Course> page = courseService.page(coursePage, wrapper);
+        long pages = page.getPages();
+        List<Course> list = page.getRecords();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("pages", pages);
+        hashMap.put("data", list);
         return Result.ok()
-                     .data("data", list);
+                     .data("data", hashMap);
     }
 
     /**

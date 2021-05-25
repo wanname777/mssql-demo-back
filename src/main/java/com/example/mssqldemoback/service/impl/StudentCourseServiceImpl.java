@@ -1,13 +1,12 @@
 package com.example.mssqldemoback.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.mssqldemoback.mapper.StudentCourseMapper;
 import com.example.mssqldemoback.pojo.StudentCourse;
 import com.example.mssqldemoback.service.StudentCourseService;
 import com.example.mssqldemoback.vo.StudentCourseVo;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>
@@ -20,9 +19,8 @@ import java.util.List;
 @Service
 public class StudentCourseServiceImpl extends ServiceImpl<StudentCourseMapper, StudentCourse> implements StudentCourseService {
     @Override
-    public List<StudentCourseVo> getStudentCourseVo(String studentId) {
-        List<StudentCourseVo> studentCourseVo =
-                this.baseMapper.getStudentCourseVo(studentId);
-        return studentCourseVo;
+    public Page<StudentCourseVo> getStudentCourseVo(String studentId,
+                                                    Page<StudentCourseVo> page) {
+        return this.baseMapper.getStudentCourseVo(studentId, page);
     }
 }

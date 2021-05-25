@@ -1,10 +1,9 @@
 package com.example.mssqldemoback.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mssqldemoback.pojo.StudentCourse;
 import com.example.mssqldemoback.vo.StudentCourseVo;
-
-import java.util.List;
 
 /**
  * <p>
@@ -15,5 +14,6 @@ import java.util.List;
  * @since 2021-05-04
  */
 public interface StudentCourseMapper extends BaseMapper<StudentCourse> {
-    List<StudentCourseVo> getStudentCourseVo(String studentId);
+    Page<StudentCourseVo> getStudentCourseVo(String studentId,
+                                             Page<StudentCourseVo> page);
 }
