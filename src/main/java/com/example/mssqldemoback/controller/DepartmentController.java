@@ -1,17 +1,16 @@
 package com.example.mssqldemoback.controller;
 
-
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mssqldemoback.dto.Result;
-import com.example.mssqldemoback.pojo.Course;
 import com.example.mssqldemoback.pojo.Department;
 import com.example.mssqldemoback.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,12 +26,20 @@ import java.util.List;
 public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
+
     @GetMapping("/selectAll")
-    public Result selectAll() {
-        List<Department> list = departmentService.list();
+    public Result selectAll(Integer current, Integer size) {
+        Page<Department> departmentPage = new Page<>(current, size);
+        Page<Department> page = departmentService.page(departmentPage);
+        long pages = page.getPages();
+        List<Department> list = page.getRecords();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("pages", pages);
+        hashMap.put("data", list);
         return Result.ok()
-                     .data("data", list);
+                     .data("data", hashMap);
     }
+
     /**
      * <p>
      * 添加或修改系信息

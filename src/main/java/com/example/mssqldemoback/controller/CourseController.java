@@ -36,10 +36,17 @@ public class CourseController {
      * @return Result
      */
     @GetMapping("/selectAll")
-    public Result selectAll() {
-        List<Course> list = courseService.list();
+    public Result selectAll(Integer current, Integer size) {
+        Page<Course> coursePage = new Page<>(current, size);
+        // QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+        Page<Course> page = courseService.page(coursePage);
+        long pages = page.getPages();
+        List<Course> list = page.getRecords();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("pages", pages);
+        hashMap.put("data", list);
         return Result.ok()
-                     .data("data", list);
+                     .data("data", hashMap);
     }
 
     /**

@@ -1,10 +1,9 @@
 package com.example.mssqldemoback.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mssqldemoback.dto.BusinessException;
 import com.example.mssqldemoback.dto.HttpStatus;
 import com.example.mssqldemoback.dto.Result;
-import com.example.mssqldemoback.pojo.Course;
-import com.example.mssqldemoback.pojo.Student;
 import com.example.mssqldemoback.pojo.Teacher;
 import com.example.mssqldemoback.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,12 +28,21 @@ import java.util.List;
 public class TeacherController {
     @Autowired
     private TeacherService teacherService;
+
     @GetMapping("/selectAll")
-    public Result selectAll() {
-        List<Teacher> list = teacherService.list();
+    public Result selectAll(Integer current, Integer size) {
+        Page<Teacher> teacherPage = new Page<>(current, size);
+
+        Page<Teacher> page = teacherService.page(teacherPage);
+        long pages = page.getPages();
+        List<Teacher> list = page.getRecords();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("pages", pages);
+        hashMap.put("data", list);
         return Result.ok()
-                     .data("data", list);
+                     .data("data", hashMap);
     }
+
     @PostMapping("/login")
     public Result login(String username, String password) {
         Teacher byId = teacherService.getById(username);

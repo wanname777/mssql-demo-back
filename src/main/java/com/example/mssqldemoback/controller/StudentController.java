@@ -1,6 +1,7 @@
 package com.example.mssqldemoback.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mssqldemoback.dto.BusinessException;
 import com.example.mssqldemoback.dto.HttpStatus;
 import com.example.mssqldemoback.dto.Result;
@@ -34,10 +35,16 @@ public class StudentController {
     private StudentService studentService;
 
     @GetMapping("/selectAll")
-    public Result selectAll() {
-        List<Student> list = studentService.list();
+    public Result selectAll(Integer current, Integer size) {
+        Page<Student> studentPage = new Page<>(current, size);
+        Page<Student> page = studentService.page(studentPage);
+        long pages = page.getPages();
+        List<Student> list = page.getRecords();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("pages", pages);
+        hashMap.put("data", list);
         return Result.ok()
-                     .data("data", list);
+                     .data("data", hashMap);
     }
 
     @GetMapping("/selectById")
